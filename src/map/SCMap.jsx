@@ -20,7 +20,12 @@ import Navigation from "./Navigation";
 import { defaults as defaultInteractions } from "ol/interaction.js";
 import Popup from "../helpers/Popup.jsx";
 import FooterTools from "./FooterTools.jsx";
-import { defaults as defaultControls, ScaleLine, FullScreen, Rotate } from "ol/control.js";
+import {
+  defaults as defaultControls,
+  ScaleLine,
+  FullScreen,
+  Rotate,
+} from "ol/control.js";
 import BasemapSwitcher from "./BasemapSwitcher";
 import PropertyReportClick from "./PropertyReportClick.jsx";
 import "ol-contextmenu/dist/ol-contextmenu.css";
@@ -39,7 +44,8 @@ const scaleLineControl = new ScaleLine({
 });
 const feedbackTemplate = (xmin, xmax, ymin, ymax, centerx, centery, scale) =>
   `${mainConfig.feedbackUrl}/?xmin=${xmin}&xmax=${xmax}&ymin=${ymin}&ymax=${ymax}&centerx=${centerx}&centery=${centery}&scale=${scale}&REPORT_PROBLEM=True`;
-const googleMapsTemplate = (pointx, pointy) => `https://www.google.com/maps?q=${pointy},${pointx}`;
+const googleMapsTemplate = (pointx, pointy) =>
+  `https://www.google.com/maps?q=${pointy},${pointx}`;
 class SCMap extends Component {
   constructor(props) {
     super(props);
@@ -54,13 +60,18 @@ class SCMap extends Component {
       mapBottom: 0,
     };
     // LISTEN FOR MAP CURSOR TO CHANGE
-    if (!mainConfig.onlyStandardCursor) window.emitter.addListener("changeCursor", (cursorStyle) => this.changeCursor(cursorStyle));
+    if (!mainConfig.onlyStandardCursor)
+      window.emitter.addListener("changeCursor", (cursorStyle) =>
+        this.changeCursor(cursorStyle)
+      );
 
     // LISTEN FOR TOC TO LOAD
     window.emitter.addListener("tocLoaded", () => this.handleUrlParameters());
 
     // LISTEN FOR ATTRIBUTE TABLE SIZE
-    window.emitter.addListener("attributeTableResize", (height) => this.onAttributeTableResize(height));
+    window.emitter.addListener("attributeTableResize", (height) =>
+      this.onAttributeTableResize(height)
+    );
 
     // CLEAR IDENTIFY MARKER AND RESULTS
     window.emitter.addListener("clearIdentify", () => this.clearIdentify());
@@ -85,7 +96,7 @@ class SCMap extends Component {
     if (window.mapControls.scaleLine) controls.push(scaleLineControl);
     if (window.mapControls.fullScreen) controls.push(new FullScreen());
     if (window.mapControls.rotate) controls.push(new Rotate());
-    
+
     var map = new Map({
       controls: defaultControls().extend(controls.concat([])),
       layers: [],
@@ -96,7 +107,12 @@ class SCMap extends Component {
         maxZoom: mainConfig.maxZoom,
         //resolutions: resolutions
       }),
-      interactions: defaultInteractions({ keyboard: true, altShiftDragRotate: window.mapControls.rotate, pinchRotate: window.mapControls.rotate, mouseWheelZoom: false }).extend([
+      interactions: defaultInteractions({
+        keyboard: true,
+        altShiftDragRotate: window.mapControls.rotate,
+        pinchRotate: window.mapControls.rotate,
+        mouseWheelZoom: false,
+      }).extend([
         new MouseWheelZoom({
           duration: 0,
           constrainResolution: true,
@@ -114,40 +130,130 @@ class SCMap extends Component {
     window.map = map;
     window.popup = new Popup();
     window.map.addOverlay(window.popup);
-  
+
     window.map.getViewport().addEventListener("contextmenu", (evt) => {
       evt.preventDefault();
       this.contextCoords = window.map.getEventCoordinate(evt);
 
       const menu = (
         <Portal>
-          <FloatingMenu key={helpers.getUID()} buttonEvent={evt} onMenuItemClick={this.onMenuItemClick} autoY={true} autoX={true}>
+          <FloatingMenu
+            key={helpers.getUID()}
+            buttonEvent={evt}
+            onMenuItemClick={this.onMenuItemClick}
+            autoY={true}
+            autoX={true}
+          >
             <MenuItem
-              className={helpers.isMobile() || !mainConfig.rightClickMenuVisibility["sc-floating-menu-basic-mode"] ? "sc-hidden" : "sc-floating-menu-toolbox-menu-item"}
+              className={
+                helpers.isMobile() ||
+                !mainConfig.rightClickMenuVisibility[
+                  "sc-floating-menu-basic-mode"
+                ]
+                  ? "sc-hidden"
+                  : "sc-floating-menu-toolbox-menu-item"
+              }
               key="sc-floating-menu-basic-mode"
             >
-              <FloatingMenuItem imageName={"collased.png"} label="Switch To Basic" />
+              <FloatingMenuItem
+                imageName={"collased.png"}
+                label="Switch To Basic"
+              />
             </MenuItem>
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-property-click"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-property-click">
-              <FloatingMenuItem imageName={"report.png"} label="Property Report" />
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility[
+                  "sc-floating-menu-property-click"
+                ]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-property-click"
+            >
+              <FloatingMenuItem
+                imageName={"report.png"}
+                label="Property Report"
+              />
             </MenuItem>
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-add-mymaps"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-add-mymaps">
-              <FloatingMenuItem imageName={"point.png"} label="Add Marker Point" />
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility[
+                  "sc-floating-menu-add-mymaps"
+                ]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-add-mymaps"
+            >
+              <FloatingMenuItem
+                imageName={"point.png"}
+                label="Add Marker Point"
+              />
             </MenuItem>
 
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-save-map-extent"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-save-map-extent">
-              <FloatingMenuItem imageName={"globe-icon.png"} label="Save as Default Extent" />
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility[
+                  "sc-floating-menu-save-map-extent"
+                ]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-save-map-extent"
+            >
+              <FloatingMenuItem
+                imageName={"globe-icon.png"}
+                label="Save as Default Extent"
+              />
             </MenuItem>
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-report-problem"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-report-problem">
-              <FloatingMenuItem imageName={"error.png"} label="Report a problem" />
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility[
+                  "sc-floating-menu-report-problem"
+                ]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-report-problem"
+            >
+              <FloatingMenuItem
+                imageName={"error.png"}
+                label="Report a problem"
+              />
             </MenuItem>
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-identify"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-identify">
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility["sc-floating-menu-identify"]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-identify"
+            >
               <FloatingMenuItem imageName={"identify.png"} label="Identify" />
             </MenuItem>
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-google-maps"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-google-maps">
-              <FloatingMenuItem imageName={"google.png"} label="View in Google Maps" />
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility[
+                  "sc-floating-menu-google-maps"
+                ]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-google-maps"
+            >
+              <FloatingMenuItem
+                imageName={"google.png"}
+                label="View in Google Maps"
+              />
             </MenuItem>
-            <MenuItem className={mainConfig.rightClickMenuVisibility["sc-floating-menu-more"] ? "sc-floating-menu-toolbox-menu-item" : "sc-hidden"} key="sc-floating-menu-more">
+            <MenuItem
+              className={
+                mainConfig.rightClickMenuVisibility["sc-floating-menu-more"]
+                  ? "sc-floating-menu-toolbox-menu-item"
+                  : "sc-hidden"
+              }
+              key="sc-floating-menu-more"
+            >
               <FloatingMenuItem imageName={"more-16.png"} label="More..." />
             </MenuItem>
           </FloatingMenu>
@@ -227,7 +333,8 @@ class SCMap extends Component {
     let classes = this.state.mapClassName.split(" ");
     if (classes.indexOf(cursorStyle) === -1) {
       cursorStyles.forEach((styleName) => {
-        if (classes.indexOf(styleName) !== -1) classes.splice(classes.indexOf(styleName), 1);
+        if (classes.indexOf(styleName) !== -1)
+          classes.splice(classes.indexOf(styleName), 1);
       });
       classes.push(cursorStyle);
       this.setState({ mapClassName: classes.join(" ") });
@@ -246,7 +353,10 @@ class SCMap extends Component {
     // GET URL PARAMETERS (ZOOM TO XY)
     const x = helpers.getURLParameter("X");
     const y = helpers.getURLParameter("Y");
-    const sr = helpers.getURLParameter("SR") === null ? "WEB" : helpers.getURLParameter("SR");
+    const sr =
+      helpers.getURLParameter("SR") === null
+        ? "WEB"
+        : helpers.getURLParameter("SR");
 
     // GET URL PARAMETERS (ZOOM TO EXTENT)
     const xmin = helpers.getURLParameter("XMIN");
@@ -257,19 +367,37 @@ class SCMap extends Component {
     if (x !== null && y !== null) {
       // URL PARAMETERS (ZOOM TO XY)
       let coords = [x, y];
-      if (sr === "WGS84") coords = fromLonLat([Math.round(x * 100000) / 100000, Math.round(y * 100000) / 100000]);
+      if (sr === "WGS84")
+        coords = fromLonLat([
+          Math.round(x * 100000) / 100000,
+          Math.round(y * 100000) / 100000,
+        ]);
 
       setTimeout(() => {
         helpers.flashPoint(coords);
       }, 1000);
-    } else if (xmin !== null && ymin !== null && xmax !== null && ymax !== null) {
+    } else if (
+      xmin !== null &&
+      ymin !== null &&
+      xmax !== null &&
+      ymax !== null
+    ) {
       //URL PARAMETERS (ZOOM TO EXTENT)
-      const extent = [parseFloat(xmin), parseFloat(ymin), parseFloat(xmax), parseFloat(ymax)];
-      window.map.getView().fit(extent, window.map.getSize(), { duration: 1000 });
+      const extent = [
+        parseFloat(xmin),
+        parseFloat(ymin),
+        parseFloat(xmax),
+        parseFloat(ymax),
+      ];
+      window.map
+        .getView()
+        .fit(extent, window.map.getSize(), { duration: 1000 });
     } else if (storage !== null) {
       // ZOOM TO SAVED EXTENT
       const extent = JSON.parse(storage);
-      window.map.getView().fit(extent, window.map.getSize(), { duration: 1000 });
+      window.map
+        .getView()
+        .fit(extent, window.map.getSize(), { duration: 1000 });
     }
 
     window.emitter.emit("mapParametersComplete");
@@ -331,7 +459,7 @@ class SCMap extends Component {
     window.map.removeLayer(this.identifyIconLayer);
     window.emitter.emit("loadReport", <div />);
   };
-  
+
   addIdentifyLayer = () => {
     this.identifyIconLayer = new VectorLayer({
       name: "sc-identify",
@@ -370,11 +498,11 @@ class SCMap extends Component {
     const point = new Point(this.contextCoords);
     const feature = new Feature(point);
     this.identifyIconLayer.getSource().addFeature(feature);
-    
+
     window.map.addLayer(this.identifyIconLayer);
-    setTimeout(()=>{
+    setTimeout(() => {
       window.map.removeLayer(this.identifyIconLayer);
-    },3000)
+    }, 3000);
     window.emitter.emit("loadReport", <Identify geometry={point} />);
   };
 
@@ -390,7 +518,15 @@ class SCMap extends Component {
     const ymax = extent[3];
     const center = window.map.getView().getCenter();
 
-    const feedbackUrl = feedbackTemplate(xmin, xmax, ymin, ymax, center[0], center[1], scale);
+    const feedbackUrl = feedbackTemplate(
+      xmin,
+      xmax,
+      ymin,
+      ymax,
+      center[0],
+      center[1],
+      scale
+    );
 
     helpers.showURLWindow(feedbackUrl, false, "full");
   };
@@ -398,8 +534,15 @@ class SCMap extends Component {
     // APP STATS
     helpers.addAppStat("Google Maps", "Right Click Map");
 
-    const latLongCoords = transform(this.contextCoords, "EPSG:3857", "EPSG:4326");
-    const googleMapsUrl = googleMapsTemplate(latLongCoords[0], latLongCoords[1]);
+    const latLongCoords = transform(
+      this.contextCoords,
+      "EPSG:3857",
+      "EPSG:4326"
+    );
+    const googleMapsUrl = googleMapsTemplate(
+      latLongCoords[0],
+      latLongCoords[1]
+    );
 
     helpers.showURLWindow(googleMapsUrl, false, "full");
   };
@@ -412,7 +555,11 @@ class SCMap extends Component {
 
   addMyMaps = () => {
     var marker = new Feature(new Point(this.contextCoords));
-    window.emitter.emit("addMyMapsFeature", marker, this.contextCoords[0] + "," + this.contextCoords[1]);
+    window.emitter.emit(
+      "addMyMapsFeature",
+      marker,
+      this.contextCoords[0] + "," + this.contextCoords[1]
+    );
   };
 
   onContextDisableParcelClick = () => {
@@ -450,27 +597,24 @@ class SCMap extends Component {
   }
 
   render() {
-    window.emitter.addListener("sidebarChanged", (isSidebarOpen) => this.sidebarChanged(isSidebarOpen));
+    window.emitter.addListener("sidebarChanged", (isSidebarOpen) =>
+      this.sidebarChanged(isSidebarOpen)
+    );
 
     return (
       <div>
-        <div id="map-theme" >
+        <div id="map-theme">
           <div id={"map-modal-window"} />
-          <div id="map" className={this.state.mapClassName} tabIndex="0" style={{ bottom: this.state.mapBottom }} />
+          <div
+            id="map"
+            className={this.state.mapClassName}
+            tabIndex="0"
+            style={{ bottom: this.state.mapBottom }}
+          />
           <Navigation />
           <FooterTools />
           <BasemapSwitcher />
           <PropertyReportClick />
-          <div
-            className={window.sidebarOpen ? "sc-map-github-button slideout" : "sc-map-github-button slidein"}
-            onClick={() => {
-              helpers.addAppStat("GitHub", "Button");
-            }}
-          >
-            <GitHubButton href="https://github.com/county-of-simcoe-gis" data-size="large" aria-label="Follow @simcoecountygis on GitHub">
-              Follow @simcoecountygis
-            </GitHubButton>
-          </div>
           <AttributeTable />
           <FloatingImageSlider />
         </div>
@@ -481,9 +625,11 @@ class SCMap extends Component {
 
 export default SCMap;
 // IMPORT ALL IMAGES
-const images = importAllImages(require.context("./images", false, /\.(png|jpe?g|svg|gif)$/));
+const images = importAllImages(
+  require.context("./images", false, /\.(png|jpe?g|svg|gif)$/)
+);
 function importAllImages(r) {
-    let images = {};
+  let images = {};
   r.keys().map((item, index) => (images[item.replace("./", "")] = r(item)));
   return images;
 }

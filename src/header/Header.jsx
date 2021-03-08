@@ -8,7 +8,17 @@ import { Item as MenuItem } from "rc-menu";
 import Portal from "../helpers/Portal.jsx";
 import mainConfig from "../config.json";
 
-const feedbackTemplate = (url, xmin, xmax, ymin, ymax, centerx, centery, scale) => `${url}/?xmin=${xmin}&xmax=${xmax}&ymin=${ymin}&ymax=${ymax}&centerx=${centerx}&centery=${centery}&scale=${scale}`;
+const feedbackTemplate = (
+  url,
+  xmin,
+  xmax,
+  ymin,
+  ymax,
+  centerx,
+  centery,
+  scale
+) =>
+  `${url}/?xmin=${xmin}&xmax=${xmax}&ymin=${ymin}&ymax=${ymax}&centerx=${centerx}&centery=${centery}&scale=${scale}`;
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -34,8 +44,17 @@ class Header extends Component {
     var evtClone = Object.assign({}, evt);
     const menu = (
       <Portal>
-        <FloatingMenu key={helpers.getUID()} buttonEvent={evtClone} item={this.props.info} onMenuItemClick={this.onMenuItemClick} styleMode="left">
-          <MenuItem className="sc-floating-menu-toolbox-menu-item" key="sc-floating-menu-login">
+        <FloatingMenu
+          key={helpers.getUID()}
+          buttonEvent={evtClone}
+          item={this.props.info}
+          onMenuItemClick={this.onMenuItemClick}
+          styleMode="left"
+        >
+          <MenuItem
+            className="sc-floating-menu-toolbox-menu-item"
+            key="sc-floating-menu-login"
+          >
             <FloatingMenuItem imageName={"lock.png"} label="Login (Sample)" />
           </MenuItem>
         </FloatingMenu>
@@ -63,7 +82,16 @@ class Header extends Component {
     const ymax = extent[3];
     const center = window.map.getView().getCenter();
 
-    const feedbackUrl = feedbackTemplate(mainConfig.feedbackUrl, xmin, xmax, ymin, ymax, center[0], center[1], scale);
+    const feedbackUrl = feedbackTemplate(
+      mainConfig.feedbackUrl,
+      xmin,
+      xmax,
+      ymin,
+      ymax,
+      center[0],
+      center[1],
+      scale
+    );
 
     helpers.showURLWindow(feedbackUrl, false, "full");
   };
@@ -89,13 +117,25 @@ class Header extends Component {
           <img src={require("./images/bar-button.png")} alt="Header Logo" />
         </div>
         <div id="sc-header-bar-logo">
-          <img src={require("./images/" + imageName)} alt="Header Logo" />
+          <img
+            src={require("./images/" + imageName)}
+            alt="Header Logo"
+            className="logo-img"
+          />
         </div>
         <div id="sc-header-search-container">
           <Search />
         </div>
-        <div className="sc-header-feedback-container" title="Feedback" onClick={this.onFeedbackClick}>
-          <img style={{ marginTop: "5px" }} src={require("./images/feedback.png")} alt="feedback" />
+        <div
+          className="sc-header-feedback-container"
+          title="Feedback"
+          onClick={this.onFeedbackClick}
+        >
+          <img
+            style={{ marginTop: "5px" }}
+            src={require("./images/feedback.png")}
+            alt="feedback"
+          />
           Feedback
         </div>
         {/* <div className="sc-header-dot-menu-container" onClick={this.onDotMenuClick}><img className="sc-header-dot-menu-img" src={images['vertical-dot-menu.png']} alt="dots"></img></div> */}
