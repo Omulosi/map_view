@@ -116,8 +116,13 @@
   display: table-cell;
   vertical-align: bottom;
   padding-left: 9px;
-  width: 111px;
-  height: 10vh;
+  width: 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: blue;
 }
 
 .logo-img {

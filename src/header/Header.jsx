@@ -117,11 +117,14 @@ class Header extends Component {
           <img src={require("./images/bar-button.png")} alt="Header Logo" />
         </div>
         <div id="sc-header-bar-logo">
-          <img
+          {/*
+           <img
             src={require("./images/" + imageName)}
             alt="Header Logo"
             className="logo-img"
           />
+         */}
+          <span>N-Geo</span>
         </div>
         <div id="sc-header-search-container">
           <Search />
